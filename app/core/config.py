@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Repo root (…/financial_portfolio_management), not process cwd — avoids wrong DB / readonly surprises.
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-
+import os
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["*"]
     # Yahoo Finance ticker suffix, e.g. ".NS" (NSE India), "" for US tickers as-is
     market_suffix: str = ".NS"
+
+    DATABASE_NAME: str = "notify_service"
+    PEPPER: str = os.getenv("PEPPER", "dhpng")
 
     @field_validator("sqlite_path", mode="after")
     @classmethod
@@ -28,6 +31,7 @@ class Settings(BaseSettings):
     def database_url(self) -> str:
         p = self.sqlite_path
         return f"sqlite+aiosqlite:///{p.as_posix()}"
+
 
 
 settings = Settings()

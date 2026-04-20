@@ -1,34 +1,65 @@
-from financial_portfolio_management.app.services.db_service import portfolio_db_service
+from curl_cffi.requests.utils import quote_path_and_params
+
+from app.services.auth_services import AuthService
+from app.services.db_service import portfolio_db_service
 from fastapi import Depends
+from app.schemas.schemas import TransactionCreate, StockOut, TransactionOut
 
-from financial_portfolio_management_bkp.app.schemas.schemas import TransactionCreate
-
+import logging
+logger = logging.getLogger(__name__)
 
 class PortfolioEndpoints:
 
-    def list_stock(self):
+    @staticmethod
+    def list_stock():
+        logger.info("Listing all stocks")
         service = portfolio_db_service()
         result = service.list_stock()
+        stocks: list[StockOut] = []
+        for sym, name, sector, industry in result:
+            res = StockOut(
+                symbol=sym,
+                name=name,
+                sector=sector,
+                industry=industry
+            )
+            stocks.append(res)
+        return stocks
+
+    @staticmethod
+    def transactions(trx: TransactionCreate, user = Depends(AuthService.get_current_user)):
+        service = portfolio_db_service()
+        result = service.create_transactions(trx, user)
         return result
 
-    def transactions(self, trx: TransactionCreate):
+    @staticmethod
+    def get_user_transactions_details(user = Depends(AuthService.get_current_user)):
         service = portfolio_db_service()
-        result = service.create_transactions(trx)
-        return result
+        result = service.get_user_trx(user.id)
 
-    def get_user_trasactions_details(self, user_id: int):
+        transactions: list[TransactionOut] = []
+        for id, user_id, symbol, quantity, price, type, created_at in result:
+            obj = TransactionOut(
+                id=id,
+                user_id=user_id,
+                symbol=symbol,
+                quantity=quantity,
+                price=price,
+                type=type,
+                created_at=created_at
+            )
+            transactions.append(obj)
+        return transactions
+
+    @staticmethod
+    def get_user_positions(user = Depends(AuthService.get_current_user)):
         service = portfolio_db_service()
-        result = service.get_user_trx(user_id)
-
-        # /// format output
-        return result
-
-    def get_user_positions(self, user_id):
-        service = portfolio_db_service()
-        positions = service.get_user_positions(user_id)
+        positions = service.get_user_positions(user.id)
         return positions
 
-    def get_portfolio_summary(self, user_id: int):
+    @staticmethod
+    def get_portfolio_summary(user = Depends(AuthService.get_current_user)):
         service = portfolio_db_service()
-        holding = service.get_portfolio_summary(user_id)
+        holding = service.get_portfolio_summary(user.id)
         return holding
+

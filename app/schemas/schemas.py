@@ -1,9 +1,10 @@
 from datetime import datetime
 from enum import Enum
+from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from app.services.stock_validation import validate_nse_symbol
+# from app.services.stock_validation import validate_nse_symbol
 
 
 class TransactionSide(str, Enum):
@@ -47,10 +48,10 @@ class StockCreate(BaseModel):
     sector: str | None = Field(None, max_length=128)
     industry: str | None = Field(None, max_length=256)
 
-    @field_validator("symbol")
-    @classmethod
-    def normalize_symbol(cls, v: str) -> str:
-        return validate_nse_symbol(v)
+    # @field_validator("symbol")
+    # @classmethod
+    # def normalize_symbol(cls, v: str) -> str:
+    #     return validate_nse_symbol(v)
 
 
 class StockOut(BaseModel):
@@ -63,16 +64,15 @@ class StockOut(BaseModel):
 
 
 class TransactionCreate(BaseModel):
-    user_id: int = Field(..., ge=1)
     symbol: str = Field(..., min_length=1, max_length=32)
     quantity: float = Field(..., gt=0)
     price: float = Field(..., gt=0)
     type: TransactionSide
 
-    @field_validator("symbol")
-    @classmethod
-    def normalize_and_validate_symbol(cls, v: str) -> str:
-        return validate_nse_symbol(v)
+    # @field_validator("symbol")
+    # @classmethod
+    # def normalize_and_validate_symbol(cls, v: str) -> str:
+    #     return validate_nse_symbol(v)
 
 
 class TransactionOut(BaseModel):
@@ -120,3 +120,56 @@ class PortfolioSummaryOut(BaseModel):
     unrealized_pnl_total: float
     holdings: list[PortfolioHoldingOut]
     period_metrics: list[PortfolioPeriodMetricsOut]
+
+
+# Auth Service
+
+class LoginDetails(BaseModel):
+    user_name: str
+    password: str
+
+class SignUpDetails(BaseModel):
+    user_name: str
+    email_address: str
+    password: str
+
+class ResetPasswordDetails(BaseModel):
+    user_name: str
+
+
+class RefreshToken(BaseModel):
+    refresh_token: str
+
+
+class AuthServiceFailedResponse(BaseModel):
+    error_message: str
+    user_name: str
+
+class AuthServiceResponseModel(BaseModel):
+    success: bool
+    message: Optional[str] = None
+    id: Optional[int] = None
+    access_token: Optional[str] = None
+    refresh_token: Optional[str] = None
+
+class Users(BaseModel):
+    id: Optional[int] = None
+    user_name: Optional[str] = None
+    email_address: Optional[str] = None
+    password: Optional[str] = None
+
+
+class TokenData(BaseModel):
+    username: str | None = None
+    userid: int | None = None
+
+class MailHandlerResponse(BaseModel):
+    success: bool
+    code: int
+    status: str
+    error_message: str = None
+
+
+class MailHandlerRequest(BaseModel):
+    message: str
+    receiver_email_address: str

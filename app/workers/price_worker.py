@@ -1,7 +1,7 @@
-import logging
 from app.services.db_service import portfolio_db_service
 from app.services.market_service import MarketService
 import time
+import logging
 logger = logging.getLogger(__name__)
 
 PRICE_CACHE: dict[str, float] = {}

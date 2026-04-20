@@ -1,12 +1,11 @@
 import asyncio
-import logging
 from concurrent.futures import ThreadPoolExecutor
 from pydoc import synopsis
 
 import yfinance as yf
 
 from app.core.config import settings
-
+import logging
 logger = logging.getLogger(__name__)
 
 executor = ThreadPoolExecutor(max_workers=5)
