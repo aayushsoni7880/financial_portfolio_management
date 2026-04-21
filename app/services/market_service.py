@@ -20,6 +20,7 @@ class MarketService:
 
     def _fetch_one(self, symbol: str) -> tuple[str, float | None]:
         ticker_symbol = f"{symbol}{settings.market_suffix}"
+        logger.info(f"Symbol: {ticker_symbol}")
         try:
             ticker = yf.Ticker(ticker_symbol)
             hist = ticker.history(period="1d")
@@ -37,7 +38,7 @@ class MarketService:
             return results
 
         for symbol in symbols:
-            sym, price = self._fetch_one(symbol)
+            sym, price = self._fetch_one(symbol[0])
             if price is not None:
                 results[sym] = price
         return results

@@ -18,13 +18,8 @@ class portfolio_db_service(SqlDatabase):
         super().__init__(db_path=settings.sqlite_path)
 
     def get_stocks_symbols(self):
-        query = "select symbols from stocks"
+        query = "select symbol from stocks"
         output = self.fetch_all(query)
-        return output
-
-    def update_price_details(self, sym, price):
-        query = "update price_history set price=? where symbol=?"
-        output = self.fetch_one(query, (sym, price))
         return output
 
     def list_stock(self):
@@ -60,7 +55,7 @@ class portfolio_db_service(SqlDatabase):
 
                     # udpate transactiont able status == Success
                 else:
-                    logger.info("Insufficient Holding for this sale")
+                    logger.info("Insufficient Holding for this")
                     raise HTTPException(status_code=400, detail="Insufficient holdings for this sale")
 
             for id, userid, sym, quantities, avg_price in pos:
@@ -149,7 +144,6 @@ class portfolio_db_service(SqlDatabase):
         pos = self.fetch_all(query, (user_id,))
         positions: list[PositionOut] = []
         for id, user_id, symbol, quantity, avg_price  in pos:
-            logger.info(PRICE_CACHE)
             last_price = PRICE_CACHE.get(symbol, 0) # Problem
             positions.append(
                 PositionOut(

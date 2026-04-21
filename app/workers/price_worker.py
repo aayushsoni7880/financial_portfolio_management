@@ -2,9 +2,12 @@ from app.services.db_service import portfolio_db_service
 from app.services.market_service import MarketService
 import time
 import logging
-logger = logging.getLogger(__name__)
+from app.workers.db_helper import update_price_details
 
-PRICE_CACHE: dict[str, float] = {}
+logger = logging.getLogger(__name__)
+import traceback
+
+PRICE_CACHE: dict[str, float]  = {}
 
 def price_worker() -> None:
     try:
@@ -20,10 +23,12 @@ def price_worker() -> None:
                 PRICE_CACHE[sym] = price
 
             for sym, price in prices.items():
-                db_service.update_price_details(sym, price)
+                update_price_details(sym, price)
             logger.info(f"Price worker finished, Sleeping for 15 minutes.")
             time.sleep(300)
     except Exception as err:
         logger.error(f"Failed in price worker, Error: {err}")
+        traceback.format_exc(1)
 
-
+if __name__ == "__main__":
+    price_worker()

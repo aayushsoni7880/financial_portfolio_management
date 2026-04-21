@@ -1,0 +1,155 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Inter", sans-serif;
+}
+
+/* 🔥 Background Gradient Mesh */
+body {
+    height: 100vh;
+    overflow: hidden;
+    background: #0f172a;
+}
+
+.bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(circle at 20% 30%, #3b82f6, transparent 40%),
+        radial-gradient(circle at 80% 70%, #9333ea, transparent 40%);
+    filter: blur(120px);
+    opacity: 0.4;
+}
+
+/* Layout */
+.container {
+    position: relative;
+    display: flex;
+    height: 100%;
+}
+
+/* LEFT SIDE */
+.left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px;
+    color: white;
+}
+
+.left h1 {
+    font-size: 56px;
+    font-weight: 700;
+}
+
+.left p {
+    margin-top: 20px;
+    opacity: 0.7;
+    max-width: 400px;
+}
+
+/* RIGHT */
+.right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 🔥 Glass Card */
+.card {
+    width: 380px;
+    padding: 40px;
+    border-radius: 20px;
+
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(30px);
+
+    box-shadow:
+        0 0 40px rgba(59,130,246,0.2),
+        inset 0 0 20px rgba(255,255,255,0.05);
+
+    color: white;
+}
+
+/* Title */
+.card h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+/* 🔥 Inputs */
+.input {
+    position: relative;
+    margin-top: 25px;
+}
+
+.input input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255,255,255,0.08);
+    color: white;
+    outline: none;
+}
+
+.input label {
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    color: #aaa;
+    transition: 0.3s;
+}
+
+.input input:focus + label,
+.input input:valid + label {
+    top: -8px;
+    font-size: 12px;
+    color: #60a5fa;
+}
+
+/* 🔥 Button */
+button {
+    width: 100%;
+    margin-top: 30px;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+
+    background: linear-gradient(135deg, #3b82f6, #9333ea);
+    color: white;
+    font-weight: 600;
+
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(59,130,246,0.4);
+}
+
+/* Switch */
+.switch {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.switch span {
+    color: #60a5fa;
+    cursor: pointer;
+}
+
+/* Hidden */
+.hidden {
+    display: none;
+}
+
+/* Message */
+#message {
+    margin-top: 15px;
+    text-align: center;
+}

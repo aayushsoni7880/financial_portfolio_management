@@ -31,3 +31,9 @@ class AuthServiceEndpoint:
         auth_service = AuthService()
         response = auth_service.refresh_access_token(refresh_token=request.refresh_token)
         return response
+
+    @staticmethod
+    def logout(request: RefreshToken, user = Depends(AuthService.get_current_user)):
+        auth_service = AuthService()
+        response = auth_service.logout(refresh_token=request.refresh_token)
+        return response

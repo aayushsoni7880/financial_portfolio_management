@@ -20,3 +20,7 @@ auth_router.add_api_route("/reset_password", AuthServiceEndpoint.reset_password,
 auth_router.add_api_route("/refresh_token", AuthServiceEndpoint.refresh_token,
                      methods=["POST"],
                      response_model=AuthServiceResponseModel)
+
+auth_router.add_api_route("/logout", AuthServiceEndpoint.logout,
+                     methods=["POST"],
+                     response_model=AuthServiceResponseModel)

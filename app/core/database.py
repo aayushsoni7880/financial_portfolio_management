@@ -27,7 +27,8 @@ class Database(ABC):
 class SqlDatabase(Database):
 
     def __init__(self, db_path):
-        self.conn = sqlite3.connect(db_path, check_same_thread=False)
+        self.conn = sqlite3.connect(db_path, timeout=10, check_same_thread=False)
+        self.conn.execute("PRAGMA journal_mode=WAL;")
 
     def fetch_all(self, query, params=()):
         cursor = self.conn.cursor()
@@ -85,26 +86,31 @@ class SqlDatabase(Database):
 
     def get_token_from_db(self, jti: str):
         query = """
-            select user_name, is_revoked from refresh_token where jti=?
+            select user_id, is_revoked from refresh_token where jti=?
         """
-        response = self.fetch_onecursor(query, (jti, ))
+        response = self.fetch_one(query, (jti, ))
         if response:
             return response[0], response[1]
         return None, None
 
     def save_refresh_token(self, data: dict):
         print(data)
-        user_name  = data["sub"]
+        user_id  = data["id"]
         type = data["type"]
         expire = data["exp"]
         jti = data["jti"]
 
         query = """
-            insert into refresh_token (user_name, type, jti, expire) values (?, ?, ?, ?)
+            insert into refresh_token (user_id, type, jti, expire) values (?, ?, ?, ?)
         """
-        self.execute(query, (user_name, type, jti, expire))
+        self.execute(query, (user_id, type, jti, expire))
         return
 
+    def revoke_refresh_token(self, jti: str):
+        query = """
+            update refresh_token set is_revoked=1 where jti=?
+        """
+        response = self.execute(query, (jti, ))
 
 class MongoDb(Database):
     pass

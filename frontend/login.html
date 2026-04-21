@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Auth</title>
+<link rel="stylesheet" href="css/login.css">
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<div class="container">
+
+  <!-- LEFT -->
+  <div class="left">
+    <h1>Trade Smarter</h1>
+    <p>Real-time insights. Better decisions. Maximum returns.</p>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+
+    <div class="card">
+
+      <h2>Welcome</h2>
+
+      <!-- LOGIN -->
+      <div id="loginView">
+        <div class="input">
+          <input id="login_user" required>
+          <label>Username</label>
+        </div>
+
+        <div class="input">
+          <input id="login_pass" type="password" required>
+          <label>Password</label>
+        </div>
+
+        <button onclick="login()">Sign In</button>
+
+        <p class="switch">
+          New here? <span onclick="switchTab('signup')">Create account</span>
+        </p>
+      </div>
+
+      <!-- SIGNUP -->
+      <div id="signupView" class="hidden">
+        <div class="input">
+          <input id="signup_user" required>
+          <label>Username</label>
+        </div>
+
+        <div class="input">
+          <input id="signup_email" required>
+          <label>Email</label>
+        </div>
+
+        <div class="input">
+          <input id="signup_pass" type="password" required>
+          <label>Password</label>
+        </div>
+
+        <button onclick="signup()">Create Account</button>
+
+        <p class="switch">
+          Already have account? <span onclick="switchTab('login')">Login</span>
+        </p>
+      </div>
+
+      <!-- RESET -->
+      <div id="resetView" class="hidden">
+        <div class="input">
+          <input id="reset_email" required>
+          <label>Email</label>
+        </div>
+
+        <button onclick="resetPassword()">Reset Password</button>
+      </div>
+
+      <p id="message"></p>
+
+    </div>
+
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+
+</body>
+</html>

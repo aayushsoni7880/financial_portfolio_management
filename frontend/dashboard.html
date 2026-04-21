@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Portfolio</h2>
+
+    <ul>
+      <li onclick="showView('positions', event)" class="active">Positions</li>
+      <li onclick="showView('transactions', event)">Transactions</li>
+      <li onclick="showView('summary', event)">Summary</li>
+    </ul>
+
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- 🔥 Trade Panel (TOP FIXED UX) -->
+    <div class="card trade-panel">
+
+      <h2>Add Trade</h2>
+
+      <div class="form-row">
+        <input id="symbolInput" placeholder="Search stock..." oninput="searchStock()">
+        <div id="stockList" class="dropdown"></div>
+      </div>
+
+      <div class="form-row">
+        <input id="qty" type="number" placeholder="Qty">
+        <input id="price" type="number" placeholder="Price">
+        <select id="type">
+          <option value="buy">Buy</option>
+          <option value="sell">Sell</option>
+        </select>
+      </div>
+
+      <button onclick="createTransaction()">Submit</button>
+
+    </div>
+
+    <!-- 🔥 Dynamic Views -->
+    <div id="positionsView" class="card">
+      <h2>Positions</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th>Qty</th>
+            <th>Avg</th>
+            <th>LTP</th>
+          </tr>
+        </thead>
+        <tbody id="positions"></tbody>
+      </table>
+    </div>
+
+    <div id="transactionsView" class="card hidden">
+      <h2>Transactions</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody id="transactions"></tbody>
+      </table>
+    </div>
+
+    <div id="summaryView" class="card hidden">
+  <h2>Portfolio Summary</h2>
+
+  <div class="chart-container">
+    <canvas id="pnlChart"></canvas>
+  </div>
+</div>
+
+  </div>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/dashboard.js"></script>
+
+</body>
+</html>
