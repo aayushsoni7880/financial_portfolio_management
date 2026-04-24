@@ -154,12 +154,11 @@ class portfolio_db_service(SqlDatabase):
 
 
     def get_user_positions(self, user_id):
-        from app.workers.price_worker import PRICE_CACHE  # local import
         query = "select * from positions where user_id=?"
         pos = self.fetch_all(query, (user_id,))
         positions: list[PositionOut] = []
         for id, user_id, symbol, quantity, avg_price  in pos:
-            last_price = PRICE_CACHE.get(symbol, 0) # Problem
+            last_price =  self.get_price(symbol).price
             positions.append(
                 PositionOut(
                 symbol=symbol,

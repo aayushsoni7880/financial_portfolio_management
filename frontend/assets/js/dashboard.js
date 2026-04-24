@@ -17,44 +17,84 @@ async function initDashboard() {
 
     await loadSummary();
     await loadDashboardPositions();
+
+    startSummaryAutoRefresh(); // ✅ add this
 }
 
 function goToPositions() {
     window.location.href = "/pages/positions.html";
 }
-
 async function loadSummary() {
-    try {
-        const data = await api("/portfolio/summary/");
+    const positions = await api("/positions");
 
-        if (!data || data.length === 0) return;
+    let totalInvested = 0;
+    let currentValue = 0;
 
-        let totalInvested = 0;
-        let currentValue = 0;
-        let totalPnl = 0;
+    positions.forEach(p => {
+        const invested = p.avg_price * p.quantity;
+        const current = p.last_price * p.quantity;
 
-        data.forEach(item => {
-            totalInvested += item.invested_value;
-            currentValue += item.current_value;
-            totalPnl += item.unrealized_pnl;
-        });
+        totalInvested += invested;
+        currentValue += current;
+    });
 
-        const pnlPct = (totalPnl / totalInvested) * 100;
+    const pnl = currentValue - totalInvested;
+    const pct = totalInvested ? (pnl / totalInvested) * 100 : 0;
 
-        document.getElementById("current_value_display").innerText =
-            formatCurrency(currentValue);
+    updateSummaryUI(currentValue, totalInvested, pnl, pct);
+}
 
-        document.getElementById("total_invested_display").innerText =
-            formatCurrency(totalInvested);
 
-        document.getElementById("unrealized_pnl_display").innerText =
-            formatCurrency(totalPnl);
+function updateSummaryUI(currentValue, totalInvested, totalPnl, pnlPct) {
+    const pnlEl = document.getElementById("unrealized_pnl_display");
+    const pctEl = document.getElementById("unrealized_pnl_pct_display");
 
-        document.getElementById("unrealized_pnl_pct_display").innerText =
-            `(${pnlPct.toFixed(2)}%)`;
+    // values
+    pnlEl.innerText = formatCurrency(totalPnl);
+    pctEl.innerText = `(${pnlPct.toFixed(2)}%)`;
 
-    } catch (err) {
-        console.error("Summary load failed:", err.message);
+    // 🔥 color logic
+    if (totalPnl >= 0) {
+        pnlEl.classList.remove("text-tertiary");
+        pnlEl.classList.add("text-secondary");
+
+        pctEl.classList.remove("text-tertiary");
+        pctEl.classList.add("text-secondary");
+    } else {
+        pnlEl.classList.remove("text-secondary");
+        pnlEl.classList.add("text-tertiary");
+
+        pctEl.classList.remove("text-secondary");
+        pctEl.classList.add("text-tertiary");
+    }
+}
+
+function updateSummaryUI(currentValue, totalInvested, totalPnl, pnlPct) {
+    const currentEl = document.getElementById("current_value_display");
+    const investedEl = document.getElementById("total_invested_display");
+    const pnlEl = document.getElementById("unrealized_pnl_display");
+    const pctEl = document.getElementById("unrealized_pnl_pct_display");
+
+    // 🧮 Update values
+    currentEl.innerText = formatCurrency(currentValue);
+    investedEl.innerText = formatCurrency(totalInvested);
+
+    pnlEl.innerText = `${totalPnl >= 0 ? "+" : ""}${formatCurrency(totalPnl)}`;
+    pctEl.innerText = `(${pnlPct.toFixed(2)}%)`;
+
+    // 🎨 Color logic for PnL only
+    if (totalPnl >= 0) {
+        pnlEl.classList.remove("text-tertiary");
+        pnlEl.classList.add("text-secondary");
+
+        pctEl.classList.remove("text-tertiary");
+        pctEl.classList.add("text-secondary");
+    } else {
+        pnlEl.classList.remove("text-secondary");
+        pnlEl.classList.add("text-tertiary");
+
+        pctEl.classList.remove("text-secondary");
+        pctEl.classList.add("text-tertiary");
     }
 }
 
@@ -114,7 +154,7 @@ async function loadDashboardPositions() {
 }
 
 function formatCurrency(value) {
-    return "$" + Number(value).toLocaleString(undefined, {
+    return "₹" + Number(value).toLocaleString("en-IN", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
@@ -122,8 +162,7 @@ function formatCurrency(value) {
 
 let ALL_STOCKS = [];
 let currentIndex = 0;
-const PAGE_SIZE = 6;
-
+let DASHBOARD_PAGE_SIZE = 6;
 async function loadStocks() {
   try {
     const res = await api("/stocks");
@@ -161,7 +200,7 @@ function renderNextStocks(reset = false) {
   const source = (IS_SEARCH_ACTIVE || CURRENT_SECTOR !== "all")
   ? FILTERED_STOCKS
   : ALL_STOCKS;
-  const nextBatch = source.slice(currentIndex, currentIndex + PAGE_SIZE);
+  const nextBatch = source.slice(currentIndex, currentIndex + DASHBOARD_PAGE_SIZE);
 
   const html = nextBatch.map(stock => `
     <article class="bg-surface-container-low rounded-xl p-6 flex flex-col gap-4 hover:bg-surface-container-high transition-colors duration-300 group cursor-pointer relative overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.06)] border-none">
@@ -202,7 +241,7 @@ function renderNextStocks(reset = false) {
 
   container.insertAdjacentHTML("beforeend", html);
 
-  currentIndex += PAGE_SIZE;
+  currentIndex += DASHBOARD_PAGE_SIZE;
 
   updateLoadMoreButton();
 }
@@ -340,4 +379,20 @@ function extractSectors() {
   ALL_SECTORS = Object.entries(sectorMap)
     .sort((a, b) => b[1] - a[1])
     .map(([sector]) => sector);
+}
+
+
+let SUMMARY_INTERVAL = null;
+
+function startSummaryAutoRefresh() {
+    if (SUMMARY_INTERVAL) return;
+
+    SUMMARY_INTERVAL = setInterval(loadSummary, 5000); // every 5 sec
+}
+
+function stopSummaryAutoRefresh() {
+    if (SUMMARY_INTERVAL) {
+        clearInterval(SUMMARY_INTERVAL);
+        SUMMARY_INTERVAL = null;
+    }
 }

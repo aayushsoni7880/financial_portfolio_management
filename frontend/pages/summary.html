@@ -66,12 +66,12 @@
 <div class="flex flex-col h-full justify-between relative z-10">
 <div>
 <h2 class="font-label text-[0.6875rem] uppercase tracking-[0.05em] text-on-surface-variant mb-4">Current Value</h2>
-<div class="font-headline text-5xl lg:text-6xl font-bold text-on-surface tracking-tighter mb-2" id="current_value_display">$3,452,891.45</div>
+<div class="font-headline text-5xl lg:text-6xl font-bold text-on-surface tracking-tighter mb-2" id="current_value_display">₹0.00</div>
 </div>
 <div class="mt-8 flex items-center gap-4">
 <div class="flex items-center gap-1.5 text-secondary bg-secondary/10 px-3 py-1.5 rounded-md">
 <span class="material-symbols-outlined text-sm font-bold" data-icon="trending_up">trending_up</span>
-<span class="font-body text-sm font-semibold">+2.4%</span>
+<span class="font-body text-sm font-semibold">0%</span>
 </div>
 <span class="font-body text-sm text-on-surface-variant">Today's Session</span>
 </div>
@@ -82,15 +82,15 @@
 <!-- Total Invested -->
 <div class="bg-surface-container-low rounded-xl p-8 flex-1 transition-all hover:bg-surface-container-highest/50">
 <h2 class="font-label text-[0.6875rem] uppercase tracking-[0.05em] text-on-surface-variant mb-3">Total Invested</h2>
-<div class="font-headline text-3xl font-semibold text-on-surface tracking-tight" id="total_invested_display">$2,850,000.00</div>
+<div class="font-headline text-3xl font-semibold text-on-surface tracking-tight" id="total_invested_display">₹0.00</div>
 </div>
 <!-- Unrealized PnL -->
 <div class="bg-surface-container-lowest rounded-xl p-8 flex-1 relative overflow-hidden">
 <div class="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full blur-[40px]"></div>
 <h2 class="font-label text-[0.6875rem] uppercase tracking-[0.05em] text-on-surface-variant mb-3">Unrealized P&amp;L</h2>
 <div class="flex items-baseline gap-3">
-<div class="font-headline text-3xl font-semibold text-secondary tracking-tight" id="unrealized_pnl_display">+$602,891.45</div>
-<div class="font-body text-sm text-secondary font-medium" id="unrealized_pnl_pct_display">(+21.15%)</div>
+<div class="font-headline text-3xl font-semibold text-secondary tracking-tight" id="unrealized_pnl_display">+₹0.00</div>
+<div class="font-body text-sm text-secondary font-medium" id="unrealized_pnl_pct_display">(0%)</div>
 </div>
 </div>
 </div>
@@ -117,82 +117,7 @@
 </tr>
 </thead>
 <tbody class="font-body text-sm text-on-surface divide-y divide-outline-variant/10" id="positions_table_body">
-<!-- Row 1 -->
-<tr class="hover:bg-surface-container-high transition-colors duration-150 group cursor-pointer">
-<td class="py-5 px-6">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-headline font-bold text-primary">A</div>
-<div>
-<div class="font-headline font-semibold text-base group-hover:text-primary transition-colors">AAPL</div>
-<div class="text-xs text-on-surface-variant mt-0.5">Apple Inc.</div>
-</div>
-</div>
-</td>
-<td class="py-5 px-6 text-right font-medium">1,250</td>
-<td class="py-5 px-6 text-right text-on-surface-variant">$150.25</td>
-<td class="py-5 px-6 text-right font-medium">$185.92</td>
-<td class="py-5 px-6 text-right">
-<div class="text-secondary font-semibold">+$44,587.50</div>
-<div class="text-xs text-secondary/80 mt-0.5">+23.74%</div>
-</td>
-</tr>
-<!-- Row 2 -->
-<tr class="hover:bg-surface-container-high transition-colors duration-150 group cursor-pointer">
-<td class="py-5 px-6">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-headline font-bold text-primary">M</div>
-<div>
-<div class="font-headline font-semibold text-base group-hover:text-primary transition-colors">MSFT</div>
-<div class="text-xs text-on-surface-variant mt-0.5">Microsoft Corp.</div>
-</div>
-</div>
-</td>
-<td class="py-5 px-6 text-right font-medium">800</td>
-<td class="py-5 px-6 text-right text-on-surface-variant">$310.50</td>
-<td class="py-5 px-6 text-right font-medium">$415.20</td>
-<td class="py-5 px-6 text-right">
-<div class="text-secondary font-semibold">+$83,760.00</div>
-<div class="text-xs text-secondary/80 mt-0.5">+33.72%</div>
-</td>
-</tr>
-<!-- Row 3 -->
-<tr class="hover:bg-surface-container-high transition-colors duration-150 group cursor-pointer">
-<td class="py-5 px-6">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-headline font-bold text-primary">T</div>
-<div>
-<div class="font-headline font-semibold text-base group-hover:text-primary transition-colors">TSLA</div>
-<div class="text-xs text-on-surface-variant mt-0.5">Tesla Inc.</div>
-</div>
-</div>
-</td>
-<td class="py-5 px-6 text-right font-medium">450</td>
-<td class="py-5 px-6 text-right text-on-surface-variant">$220.00</td>
-<td class="py-5 px-6 text-right font-medium">$198.45</td>
-<td class="py-5 px-6 text-right">
-<div class="text-tertiary font-semibold">-$9,697.50</div>
-<div class="text-xs text-tertiary/80 mt-0.5">-9.79%</div>
-</td>
-</tr>
-<!-- Row 4 -->
-<tr class="hover:bg-surface-container-high transition-colors duration-150 group cursor-pointer">
-<td class="py-5 px-6">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-headline font-bold text-primary">N</div>
-<div>
-<div class="font-headline font-semibold text-base group-hover:text-primary transition-colors">NVDA</div>
-<div class="text-xs text-on-surface-variant mt-0.5">NVIDIA Corp.</div>
-</div>
-</div>
-</td>
-<td class="py-5 px-6 text-right font-medium">1,000</td>
-<td class="py-5 px-6 text-right text-on-surface-variant">$450.00</td>
-<td class="py-5 px-6 text-right font-medium">$890.10</td>
-<td class="py-5 px-6 text-right">
-<div class="text-secondary font-semibold">+$440,100.00</div>
-<div class="text-xs text-secondary/80 mt-0.5">+97.80%</div>
-</td>
-</tr>
+
 </tbody>
 </table>
 </div>
@@ -222,6 +147,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     initLayout()
     initDashboard();
+});
+
+    document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        stopSummaryAutoRefresh();
+    } else {
+        startSummaryAutoRefresh();
+    }
 });
 </script>
 
