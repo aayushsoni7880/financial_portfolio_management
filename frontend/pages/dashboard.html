@@ -1,104 +1,144 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
+<html class="dark" lang="en">
+<head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Market Explorer - Monolith</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
+<!-- Tailwind -->
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
-<!-- shared config -->
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+<!-- Shared config -->
 <script src="../assets/shared/tailwind.js"></script>
 
-<!-- global css -->
+<!-- Global CSS -->
 <link rel="stylesheet" href="../assets/css/global.css">
 
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-    </style>
-
+<style>
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+</style>
 </head>
+
 <body class="bg-surface text-on-surface font-body min-h-screen flex flex-col">
-<!-- TopNavBar -->
+
 <!-- Sidebar -->
-  <div id="sidebar"></div>
+<div id="sidebar"></div>
+
 <div class="flex-1 flex flex-col lg:ml-72">
 
 <!-- Header -->
-    <div id="header"></div>
-<!-- Main Content Canvas -->
+<div id="header"></div>
 
 <main class="flex-1 w-full max-w-7xl mx-auto px-6 py-12 flex flex-col gap-8">
-<!-- Page Header -->
-<header class="flex flex-col gap-2">
-<h1 class="font-headline text-4xl font-bold text-on-surface tracking-tight">Market Explorer</h1>
-<p class="font-body text-on-surface-variant text-base">Discover and analyze global equities with precision data.</p>
+
+<!-- Header -->
+<header>
+<h1 class="text-4xl font-bold">Market Explorer</h1>
+<p class="text-on-surface-variant">Discover and analyze global equities</p>
 </header>
-<!-- Search & Filter Controls (Mobile Search Fallback & Detailed Filters) -->
-<section class="bg-surface-container-low rounded-xl p-6 flex flex-col md:flex-row gap-4 items-center shadow-[0_4px_30px_rgba(0,0,0,0.05)] border-none">
+
+<!-- FILTER + SEARCH -->
+<section class="bg-surface-container-low rounded-xl p-6 flex flex-col md:flex-row gap-4 items-center overflow-visible">
+
+<!-- SEARCH -->
 <div class="w-full md:hidden relative">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant z-10" data-icon="search">search</span>
-<input id="marketSearch" oninput="handleMarketSearch()" class="w-full bg-surface-container-highest border-0 rounded-md py-3 pl-10 pr-4 text-on-surface placeholder:text-on-surface-variant focus:ring-1 focus:ring-primary focus:outline-none focus:bg-surface-bright transition-colors font-body text-sm" placeholder="Search Markets..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2">search</span>
+<input id="marketSearch"
+  oninput="handleMarketSearch()"
+  class="w-full bg-surface-container-highest rounded-md py-3 pl-10 pr-4"
+  placeholder="Search Markets..."/>
 </div>
-<div class="flex gap-3 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-<button onclick="setSector('all')" class="whitespace-nowrap px-4 py-2 bg-primary/10 text-primary rounded-md font-label text-sm font-medium hover:bg-primary/20 transition-colors flex items-center gap-2">
-<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
-                    All Sectors
-                </button>
-<button onclick="setSector('Technology')" class="whitespace-nowrap px-4 py-2 bg-surface-container-highest text-on-surface rounded-md font-label text-sm hover:bg-surface-bright transition-colors">Technology</button>
-<button onclick="setSector('Finance')" class="whitespace-nowrap px-4 py-2 bg-surface-container-highest text-on-surface rounded-md font-label text-sm hover:bg-surface-bright transition-colors">Finance</button>
-<button onclick="setSector('Energy')" class="whitespace-nowrap px-4 py-2 bg-surface-container-highest text-on-surface rounded-md font-label text-sm hover:bg-surface-bright transition-colors">Energy</button>
+
+<!-- FILTERS -->
+<div class="relative w-full md:w-auto">
+
+  <!-- Scrollable row -->
+  <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+
+    <button onclick="setSector('all')" class="btn-filter btn-filter-active">
+      All Sectors
+    </button>
+
+    <div id="sectorFilters" class="flex gap-3"></div>
+
+  </div>
+
+  <!-- Dropdown OUTSIDE scroll -->
+  <div id="sectorDropdown"
+    class="hidden absolute right-0 top-full mt-2
+         bg-surface-container-high border border-outline-variant/20
+         rounded-lg shadow-xl z-[9999] w-52 max-h-60 overflow-y-auto">
+  </div>
+
 </div>
+
+<!-- RIGHT ICONS -->
 <div class="ml-auto flex gap-2">
-<button class="p-2 bg-surface-container-highest text-primary rounded-md hover:bg-surface-bright transition-colors flex items-center justify-center">
-<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<button class="p-2 bg-surface-container-highest rounded-md">
+<span class="material-symbols-outlined">grid_view</span>
 </button>
-<button class="p-2 bg-surface-container-highest text-on-surface-variant rounded-md hover:bg-surface-bright transition-colors flex items-center justify-center">
-<span class="material-symbols-outlined" data-icon="list">list</span>
-</button>
-</div>
-</section>
-<!-- Data Grid -->
-    <section id="stocksGrid"
-  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-</section>
-<!-- / Load More &ndash;&gt;-->
-<div class="flex justify-center mt-8">
-<button id="loadMoreBtn"
-  onclick="renderNextStocks()" class="px-6 py-3 bg-surface-container-highest text-on-surface rounded-lg font-label font-medium hover:bg-surface-bright transition-colors shadow-[0_4px_20px_rgba(0,0,0,0.1)] flex items-center gap-2">
-                Load More Markets
-                <span class="material-symbols-outlined text-sm" data-icon="expand_more">expand_more</span>
+
+<button class="p-2 bg-surface-container-highest rounded-md">
+<span class="material-symbols-outlined">list</span>
 </button>
 </div>
 
+</section>
+
+<!-- STOCK GRID -->
+<section id="stocksGrid"
+  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+</section>
+
+<!-- LOAD MORE -->
+<div class="flex justify-center mt-8">
+<button id="loadMoreBtn"
+  onclick="renderNextStocks()"
+  class="px-6 py-3 bg-surface-container-highest rounded-lg">
+  Load More Markets
+</button>
+</div>
+
+</main>
+
+<!-- Toast -->
+<div id="toast-container"
+ class="fixed bottom-5 right-5 z-[9999] flex flex-col gap-3">
+</div>
+
+</div>
+
+<!-- Scripts -->
 <script src="../assets/js/config.js"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/utils.js"></script>
-
 <script src="../assets/js/toast.js"></script>
 <script src="../assets/js/layout.js"></script>
+<script src="../assets/js/dashboard.js"></script>
 
-<script src="../assets/js/dashboard.js"></script> <!-- LAST -->
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-    if (!localStorage.getItem("access_token")) {
-        window.location.href = "/pages/auth.html";
-    }
-    initLayout()
-    loadStocks();
-renderSectorFilters();
+document.addEventListener("DOMContentLoaded", () => {
+  if (!localStorage.getItem("access_token")) {
+    window.location.href = "/pages/auth.html";
+  }
+
+  initLayout();
+  loadStocks();
+});
+
+/* Close dropdown */
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".relative")) {
+    document.getElementById("sectorDropdown")?.classList.add("hidden");
+  }
 });
 </script>
 
-</main>
-        <div id="toast-container"
-     class="fixed bottom-5 right-5 z-[9999] flex flex-col gap-3">
-</div>
-          <script src="../assets/js/toast.js"></script>
-</div>
-</body></html>
+</body>
+</html>

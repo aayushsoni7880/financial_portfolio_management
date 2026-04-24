@@ -1,3 +1,10 @@
+
+let ALL_POSITIONS = [];
+let CURRENT_PAGE = 1;
+const PAGE_SIZE = 5;
+let CURRENT_FILTER = "all";
+let CURRENT_SEARCH = "";
+
 async function initPositions() {
     try {
         const data = await api("/positions");
@@ -6,35 +13,106 @@ async function initPositions() {
         showError("Failed to load positions");
     }
 }
+//
+//function renderPositions() {
+//    const tbody = document.getElementById("positions_table_body");
+//    tbody.innerHTML = "";
+//
+//    let data = [...ALL_POSITIONS];
+//
+//    // 🔍 SEARCH
+//    if (CURRENT_SEARCH) {
+//        data = data.filter(p =>
+//            p.symbol.toUpperCase().includes(CURRENT_SEARCH)
+//        );
+//    }
+//
+//    // 🎯 FILTER
+//    if (CURRENT_FILTER === "profit") {
+//        data = data.filter(p =>
+//            ((p.last_price - p.avg_price) * p.quantity) > 0
+//        );
+//    }
+//
+//    if (CURRENT_FILTER === "loss") {
+//        data = data.filter(p =>
+//            ((p.last_price - p.avg_price) * p.quantity) < 0
+//        );
+//    }
+//
+//    const total = data.length;
+//
+//    // 📄 PAGINATION
+//    const startIndex = (CURRENT_PAGE - 1) * PAGE_SIZE;
+//    const pageData = data.slice(startIndex, startIndex + PAGE_SIZE);
+//
+//    // 🧾 RENDER ROWS
+//    pageData.forEach(p => {
+//        const pnl = (p.last_price - p.avg_price) * p.quantity;
+//        const pnlPct = ((p.last_price - p.avg_price) / p.avg_price) * 100;
+//
+//        const pnlColor = pnl >= 0 ? "text-secondary" : "text-tertiary";
+//
+//        const row = `
+//            <tr class="hover:bg-surface-container-high transition-colors duration-150">
+//                <td class="px-6 py-4 font-medium">${p.symbol}</td>
+//
+//                <td class="px-6 py-4 text-right">${p.quantity}</td>
+//
+//                <td class="px-6 py-4 text-right text-on-surface-variant">
+//                    ₹${Number(p.avg_price).toFixed(2)}
+//                </td>
+//
+//                <td class="px-6 py-4 text-right font-medium">
+//                    ₹${Number(p.last_price).toFixed(2)}
+//                </td>
+//
+//                <td class="px-6 py-4 text-right font-medium">
+//                    ₹${(p.last_price * p.quantity).toFixed(2)}
+//                </td>
+//
+//                <td class="px-6 py-4 text-right">
+//                    <div class="${pnlColor} font-semibold">
+//                        ₹${pnl.toFixed(2)}
+//                    </div>
+//                    <div class="text-xs ${pnlColor}/80">
+//                        ${pnlPct.toFixed(2)}%
+//                    </div>
+//                </td>
+//
+//                <td class="px-6 py-4 text-right text-xs">
+//                    ${calculateAllocation(p)}%
+//                </td>
+//            </tr>
+//        `;
+//
+//        tbody.insertAdjacentHTML("beforeend", row);
+//    });
+//
+//    // 📊 UPDATE SUMMARY TEXT
+//    updatePositionsSummary(total);
+//
+//    // 🔢 UPDATE PAGINATION NUMBERS (if you already have this)
+//    renderPaginationNumbers(total);
+//}
 
-function renderPositions(data) {
-    const tbody = document.getElementById("positions_table_body");
-    if (!tbody) return;
+function updatePositionsSummary(totalCount) {
+    const label = document.getElementById("positionsSummary");
+    if (!label) return;
 
-    tbody.innerHTML = "";
+    if (totalCount === 0) {
+        label.textContent = "No positions found";
+        return;
+    }
 
-    data.forEach(p => {
-        tbody.innerHTML += `
-        <tr class="hover:bg-surface-container-high">
-            <td class="py-4 px-6">${p.symbol}</td>
-            <td class="py-4 px-6 text-right">${p.quantity}</td>
-            <td class="py-4 px-6 text-right">${p.avg_price}</td>
-            <td class="py-4 px-6 text-right">${p.last_price}</td>
-            <td class="py-4 px-6 text-right">
-                ${formatCurrency(p.unrealized_pnl)}
-            </td>
-        </tr>`;
-    });
+    const start = (CURRENT_PAGE - 1) * PAGE_SIZE + 1;
+    const end = Math.min(CURRENT_PAGE * PAGE_SIZE, totalCount);
+
+    label.textContent = `Showing ${start} to ${end} of ${totalCount} positions`;
 }
 
 //
-let ALL_POSITIONS = [];
 let FILTERED_POSITIONS = [];
-
-let CURRENT_PAGE = 1;
-const PAGE_SIZE = 5;
-
-let CURRENT_FILTER = "all"; // all | profit | loss
 let SEARCH_QUERY = "";
 
 let REFRESH_INTERVAL = null;
@@ -79,7 +157,6 @@ function applyFilters() {
     CURRENT_PAGE = 1;
     renderPositions();
 }
-
 function renderPositions() {
     const tbody = document.getElementById("positions_table_body");
     tbody.innerHTML = "";
@@ -92,7 +169,10 @@ function renderPositions() {
     );
 
     pageData.forEach(p => {
-        const allocation = totalPortfolio ? (p.marketValue / totalPortfolio) * 100 : 0;
+        const allocation = totalPortfolio
+            ? (p.marketValue / totalPortfolio) * 100
+            : 0;
+
         const isProfit = p.pnl >= 0;
 
         tbody.insertAdjacentHTML("beforeend", `
@@ -128,6 +208,8 @@ function renderPositions() {
         `);
     });
 
+    updatePositionsSummary(FILTERED_POSITIONS.length);
+    renderPaginationNumbers();
     updatePagination();
 }
 
@@ -151,16 +233,17 @@ function handleSearch(value) {
     applyFilters();
 }
 
-function setFilter(type) {
+function setFilter(type, el) {
     CURRENT_FILTER = type;
 
-    // 🔥 update UI active state
     document.querySelectorAll(".filter-btn").forEach(btn => {
         btn.classList.remove("bg-surface-bright", "text-on-surface");
         btn.classList.add("text-on-surface-variant");
     });
 
-    event.target.classList.add("bg-surface-bright", "text-on-surface");
+    if (el) {
+        el.classList.add("bg-surface-bright", "text-on-surface");
+    }
 
     applyFilters();
 }
@@ -295,4 +378,17 @@ function stopAutoRefresh() {
         clearInterval(REFRESH_INTERVAL);
         REFRESH_INTERVAL = null;
     }
+}
+
+
+function calculateAllocation(p) {
+    const totalValue = ALL_POSITIONS.reduce(
+        (sum, item) => sum + (item.last_price * item.quantity),
+        0
+    );
+
+    if (!totalValue) return 0;
+
+    const value = p.last_price * p.quantity;
+    return ((value / totalValue) * 100).toFixed(2);
 }

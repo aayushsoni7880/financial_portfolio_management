@@ -10,7 +10,7 @@
   <div class="flex-1 flex justify-center">
     <div class="hidden md:flex items-center flex-1 max-w-md mx-8 relative">
 <span class="material-symbols-outlined absolute left-3 text-on-surface-variant z-10" data-icon="search">search</span>
-<input class="w-full bg-surface-container-highest border-0 rounded-md py-2 pl-10 pr-4 text-on-surface placeholder:text-on-surface-variant focus:ring-1 focus:ring-primary focus:outline-none focus:bg-surface-bright transition-colors font-body text-sm" placeholder="Search Markets..." type="text"/>
+<input id="globalMarketSearch" oninput="handleGlobalSearch(this.value)" class="w-full bg-surface-container-highest border-0 rounded-md py-2 pl-10 pr-4 text-on-surface placeholder:text-on-surface-variant focus:ring-1 focus:ring-primary focus:outline-none focus:bg-surface-bright transition-colors font-body text-sm" placeholder="Search Markets..." type="text"/>
 </div>
   </div>
 

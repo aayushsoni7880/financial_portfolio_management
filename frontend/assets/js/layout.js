@@ -42,3 +42,16 @@ function goToProfile() {
 function goToChangePassword() {
     window.location.href = "/pages/change_password.html";
 }
+
+
+function handleGlobalSearch(value) {
+  const dashboardInput = document.getElementById("marketSearch");
+
+  if (dashboardInput) {
+    dashboardInput.value = value;
+  }
+
+  if (typeof handleMarketSearch === "function") {
+    handleMarketSearch();
+  }
+}

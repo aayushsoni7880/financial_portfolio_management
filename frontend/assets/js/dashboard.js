@@ -1,5 +1,14 @@
 let IS_SEARCH_ACTIVE = false;
 let CURRENT_SECTOR = "all"; // all | Technology | Energy | etc
+
+const BTN_CLASS = `
+whitespace-nowrap px-4 py-2
+bg-surface-container-highest text-on-surface
+rounded-md font-label text-sm
+hover:bg-surface-bright transition-colors
+`;
+
+
 async function initDashboard() {
     if (!localStorage.getItem("access_token")) {
         window.location.href = "/pages/auth.html";
@@ -120,10 +129,13 @@ async function loadStocks() {
     const res = await api("/stocks");
 
     ALL_STOCKS = res.data || res;
-    FILTERED_STOCKS = [...ALL_STOCKS];
-    currentIndex = 0;
 
-    renderNextStocks(true); // first load
+    extractSectors();        // ✅ NEW
+    renderSectorFilters();   // ✅ NEW
+
+    currentIndex = 0;
+    applyFilters();          // instead of renderNextStocks
+
   } catch (err) {
     toast.error("Failed to load stocks");
   }
@@ -220,6 +232,10 @@ function handleMarketSearch() {
 
   applyFilters();
 }
+function closeSectorDropdown() {
+  const dropdowns = document.querySelectorAll("#sectorDropdown");
+  dropdowns.forEach(d => d.classList.add("hidden"));
+}
 
 function setSector(sector) {
   CURRENT_SECTOR = sector;
@@ -227,6 +243,8 @@ function setSector(sector) {
 
   updateActiveSectorUI(sector);
   applyFilters();
+
+  closeSectorDropdown(); // 🔥 better
 }
 
 function applyFilters() {
@@ -253,30 +271,61 @@ function applyFilters() {
 }
 
 function updateActiveSectorUI(selected) {
-  document.querySelectorAll(".sector-btn").forEach(btn => {
-    btn.classList.remove("bg-primary/10", "text-primary");
+  document.querySelectorAll(".btn-filter").forEach(btn => {
+    btn.classList.remove("btn-filter-active");
 
-    if (btn.innerText.trim().toLowerCase() === selected.toLowerCase() ||
+    if (btn.innerText.trim() === selected ||
         (selected === "all" && btn.innerText.includes("All"))) {
-      btn.classList.add("bg-primary/10", "text-primary");
+      btn.classList.add("btn-filter-active");
     }
   });
 }
-
 function renderSectorFilters() {
   const container = document.getElementById("sectorFilters");
+  const dropdown = document.getElementById("sectorDropdown");
 
-  const sectors = [...new Set(ALL_STOCKS.map(s => s.sector).filter(Boolean))];
+  const sectorMap = {};
+
+  ALL_STOCKS.forEach(s => {
+    if (!s.sector) return;
+    sectorMap[s.sector] = (sectorMap[s.sector] || 0) + 1;
+  });
+
+  const sectors = Object.keys(sectorMap)
+    .sort((a, b) => sectorMap[b] - sectorMap[a]);
+
+  const top = sectors.slice(0, 5);
+  const more = sectors.slice(5);
 
   container.innerHTML = `
-    <button onclick="setSector('all')" class="sector-btn">All</button>
-    ${sectors.map(sec => `
-      <button onclick="setSector('${sec}')" class="sector-btn">
+    ${top.map(sec => `
+      <button onclick="setSector('${sec}')"
+        class="btn-filter">
         ${sec}
       </button>
     `).join("")}
+
+    ${more.length ? `
+      <button onclick="toggleSectorDropdown()" class="btn-filter flex items-center gap-1">
+        More
+        <span class="material-symbols-outlined text-sm">expand_more</span>
+      </button>
+    ` : ""}
   `;
+
+  // 🔥 Populate dropdown separately
+  dropdown.innerHTML = more.map(sec => `
+    <div onclick="setSector('${sec}')"
+      class="px-4 py-2 hover:bg-surface-container-highest cursor-pointer">
+      ${sec}
+    </div>
+  `).join("");
 }
+
+function toggleSectorDropdown() {
+  document.getElementById("sectorDropdown").classList.toggle("hidden");
+}
+
 
 function extractSectors() {
   const sectorMap = {};
