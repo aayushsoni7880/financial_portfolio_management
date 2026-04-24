@@ -1,6 +1,6 @@
 import sqlite3
 from abc import abstractmethod, ABC
-from backend.app.schemas.schemas import Users
+from app.schemas.schemas import Users
 import logging
 logger = logging.getLogger(__name__)
 

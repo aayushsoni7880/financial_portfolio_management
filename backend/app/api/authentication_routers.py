@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from backend.app.services.auth_service_endpoints import AuthServiceEndpoint
-from backend.app.schemas.schemas import AuthServiceResponseModel
+from app.services.auth_service_endpoints import AuthServiceEndpoint
+from app.schemas.schemas import AuthServiceResponseModel
 
 auth_router = APIRouter()
 

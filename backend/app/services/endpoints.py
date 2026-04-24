@@ -1,9 +1,9 @@
 from curl_cffi.requests.utils import quote_path_and_params
 
-from backend.app.services.auth_services import AuthService
-from backend.app.services.db_service import portfolio_db_service
+from app.services.auth_services import AuthService
+from app.services.db_service import portfolio_db_service
 from fastapi import Depends
-from backend.app.schemas.schemas import TransactionCreate, StockOut, TransactionOut, ChangePasswordOut, ChangePassword
+from app.schemas.schemas import TransactionCreate, StockOut, TransactionOut, ChangePasswordOut, ChangePassword
 
 import logging
 logger = logging.getLogger(__name__)

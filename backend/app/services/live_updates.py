@@ -1,7 +1,7 @@
 import asyncio
 from fastapi import WebSocket
 
-from backend.app.workers.price_worker import PRICE_CACHE
+from app.workers.price_worker import PRICE_CACHE
 import logging
 logger = logging.getLogger(__name__)
 

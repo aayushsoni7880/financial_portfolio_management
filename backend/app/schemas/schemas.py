@@ -4,7 +4,7 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-# from backend.app.services.stock_validation import validate_nse_symbol
+# from app.services.stock_validation import validate_nse_symbol
 
 
 class TransactionSide(str, Enum):

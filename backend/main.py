@@ -8,11 +8,8 @@ from app.core.config import settings
 from app.core.database import SqlDatabase
 
 from fastapi.middleware.cors import CORSMiddleware
-from app.workers.price_worker import price_worker
 from app.core.logging import setup_logger
 import logging
-
-from multiprocessing import Process
 
 
 app = FastAPI(title=settings.app_name)
