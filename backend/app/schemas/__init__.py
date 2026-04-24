@@ -1,4 +1,4 @@
-from app.schemas.schemas import (
+from backend.app.schemas.schemas import (
     PortfolioHoldingOut,
     PortfolioPeriodMetricsOut,
     PortfolioSummaryOut,

@@ -4,16 +4,16 @@ from os import access
 from fastapi import Depends, FastAPI, HTTPException, status
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
-from app.enums.enums import AuthTokenConfig, AdminDetails
-from app.schemas.schemas import AuthServiceResponseModel, TokenData, MailHandlerRequest
+from backend.app.enums.enums import AuthTokenConfig, AdminDetails
+from backend.app.schemas.schemas import AuthServiceResponseModel, TokenData, MailHandlerRequest
 
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
 from typing import Annotated
 
-from app.core.config import settings
-from app.core.database import SqlDatabase
-from app.services.gmail_mail_sent import GmailMailSent
+from backend.app.core.config import settings
+from backend.app.core.database import SqlDatabase
+from backend.app.services.gmail_mail_sent import GmailMailSent
 import logging
 logger = logging.getLogger(__name__)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")

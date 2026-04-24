@@ -1,8 +1,8 @@
-from app.services.db_service import portfolio_db_service
-from app.services.market_service import MarketService
+from backend.app.services.db_service import portfolio_db_service
+from backend.app.services.market_service import MarketService
 import time
 import logging
-from app.workers.db_helper import update_price_details
+from backend.app.workers.db_helper import update_price_details
 
 logger = logging.getLogger(__name__)
 import traceback

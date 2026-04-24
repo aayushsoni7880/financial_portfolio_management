@@ -3,11 +3,11 @@ from statistics import quantiles
 
 from fastapi import HTTPException
 
-from app.services.auth_services import AuthService
-from app.core.database import SqlDatabase
-from app.core.config import settings
-from app.schemas.schemas import TransactionOut, Users, PriceOut, ChangePasswordOut
-from app.schemas.schemas import TransactionCreate, TransactionSide, \
+from backend.app.services.auth_services import AuthService
+from backend.app.core.database import SqlDatabase
+from backend.app.core.config import settings
+from backend.app.schemas.schemas import TransactionOut, Users, PriceOut, ChangePasswordOut
+from backend.app.schemas.schemas import TransactionCreate, TransactionSide, \
     PortfolioHoldingOut, PositionOut
 
 import logging
@@ -120,7 +120,7 @@ class portfolio_db_service(SqlDatabase):
 
     def get_portfolio_summary(self, user_id: int):
 
-        from app.workers.price_worker import PRICE_CACHE # local import
+        from backend.app.workers.price_worker import PRICE_CACHE # local import
         query = "select * from positions where user_id=?"
         pos = self.fetch_all(query, (user_id,))
         holdings: list[PortfolioHoldingOut] = []
@@ -154,7 +154,7 @@ class portfolio_db_service(SqlDatabase):
 
 
     def get_user_positions(self, user_id):
-        from app.workers.price_worker import PRICE_CACHE  # local import
+        from backend.app.workers.price_worker import PRICE_CACHE  # local import
         query = "select * from positions where user_id=?"
         pos = self.fetch_all(query, (user_id,))
         positions: list[PositionOut] = []

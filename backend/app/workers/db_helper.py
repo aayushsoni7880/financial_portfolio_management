@@ -2,7 +2,7 @@ import queue
 import threading
 import sqlite3
 
-from app.core.config import settings
+from backend.app.core.config import settings
 
 write_queue = queue.Queue()
 

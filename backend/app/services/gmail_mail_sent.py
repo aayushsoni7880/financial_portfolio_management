@@ -2,9 +2,9 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-from app.enums.enums import AdminDetails
-from app.schemas.schemas import MailHandlerRequest, MailHandlerResponse
-from app.services.base_mail import SentMail
+from backend.app.enums.enums import AdminDetails
+from backend.app.schemas.schemas import MailHandlerRequest, MailHandlerResponse
+from backend.app.services.base_mail import SentMail
 
 
 class GmailMailSent(SentMail):

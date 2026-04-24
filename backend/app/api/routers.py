@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from app.services.endpoints import PortfolioEndpoints
-from app.schemas.schemas import StockOut, TransactionOut, TransactionCreate, \
+from backend.app.services.endpoints import PortfolioEndpoints
+from backend.app.schemas.schemas import StockOut, TransactionOut, TransactionCreate, \
     PortfolioSummaryOut, PortfolioHoldingOut, PositionOut, PriceOut, ChangePasswordOut
 
 router = APIRouter()

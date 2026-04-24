@@ -1,7 +1,7 @@
-from app.services.auth_services import AuthService
+from backend.app.services.auth_services import AuthService
 from fastapi import Depends
 
-from app.schemas.schemas import SignUpDetails, LoginDetails, \
+from backend.app.schemas.schemas import SignUpDetails, LoginDetails, \
     ResetPasswordDetails, RefreshToken
 
 
