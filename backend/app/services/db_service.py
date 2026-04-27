@@ -30,14 +30,13 @@ class portfolio_db_service(SqlDatabase):
         return output
 
     def list_stock(self):
-        query  = "select symbol, name, sector, industry from stocks "
+        query  = "select symbol, name, sector, industry , price from stocks "
         output = self.fetch_all(query)
         return output
 
     def create_transactions(self, txn: TransactionCreate, user: Users):
         try:
-            logger.info(f"UserId; {user.id}")
-            user_id = user.id
+            user_id = user.user_id
             symbol = txn.symbol
             quantity = txn.quantity
             price = txn.price
@@ -171,7 +170,7 @@ class portfolio_db_service(SqlDatabase):
 
 
     def get_price(self, symbol: str):
-        query = "select price from price_history where symbol=? order by timestamp desc limit 1"
+        query = "select price from stocks where symbol=?"
         output = self.fetch_one(query, (symbol, ))
         if output is None:
             raise HTTPException(status_code=400, detail="Stock price details not found.")
@@ -183,7 +182,7 @@ class portfolio_db_service(SqlDatabase):
         user_details = auth_service.db.get_user_by_id(user_id)
         if not user_details:
             raise HTTPException(status_code=400, detail="User details does not found.")
-        if user_details.id:
+        if user_details.user_id:
             if auth_service._verify_password(current_password, user_details.password):
                 hashed_password = auth_service._hash_password(new_password)
 
@@ -193,3 +192,16 @@ class portfolio_db_service(SqlDatabase):
             raise HTTPException(status_code=400, detail="Current password does not match, Try again.")
         raise HTTPException(status_code=400, detail="User Id does not found.")
 
+    # def update_price_details(self, sym, price):
+    #     query = """
+    #         UPDATE stocks
+    #         SET price = %s
+    #         WHERE symbol = %s
+    #     """
+    #     db.execute(query, (price, sym))
+    def get_user_profile(self,user_id):
+        query = "select user_name,user_email,user_id from users where user_id=?"
+        result = self.fetch_one(query, (user_id,))
+        if result is None:
+            raise HTTPException(status_code=400, detail="User Id does not found.")
+        return result

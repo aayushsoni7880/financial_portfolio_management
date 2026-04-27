@@ -47,6 +47,7 @@ class StockCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=256)
     sector: str | None = Field(None, max_length=128)
     industry: str | None = Field(None, max_length=256)
+    price: float | None = Field(default=None, ge=0)
 
     # @field_validator("symbol")
     # @classmethod
@@ -61,6 +62,8 @@ class StockOut(BaseModel):
     name: str
     sector: str | None = None
     industry: str | None = None
+    price: float | None = None
+
 
 
 class TransactionCreate(BaseModel):
@@ -133,11 +136,16 @@ class PortfolioSummaryOut(BaseModel):
     holdings: list[PortfolioHoldingOut]
     period_metrics: list[PortfolioPeriodMetricsOut]
 
+class profile_details(BaseModel):
+    user_name:str
+    user_email:str
+    user_id:str
+
 
 # Auth Service
 
 class LoginDetails(BaseModel):
-    user_name: str
+    user_id: str
     password: str
 
 class SignUpDetails(BaseModel):
@@ -160,7 +168,7 @@ class AuthServiceFailedResponse(BaseModel):
 class AuthServiceResponseModel(BaseModel):
     success: bool
     message: Optional[str] = None
-    id: Optional[int] = None
+    id: Optional[str] = None
     access_token: Optional[str] = None
     refresh_token: Optional[str] = None
 
@@ -169,11 +177,12 @@ class Users(BaseModel):
     user_name: Optional[str] = None
     email_address: Optional[str] = None
     password: Optional[str] = None
+    user_id:Optional[str]=None#EOR-99482-AS
 
 
 class TokenData(BaseModel):
     username: str | None = None
-    userid: int | None = None
+    userid: str | None = None
 
 class MailHandlerResponse(BaseModel):
     success: bool

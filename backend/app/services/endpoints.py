@@ -3,7 +3,7 @@ from curl_cffi.requests.utils import quote_path_and_params
 from app.services.auth_services import AuthService
 from app.services.db_service import portfolio_db_service
 from fastapi import Depends
-from app.schemas.schemas import TransactionCreate, StockOut, TransactionOut, ChangePasswordOut, ChangePassword
+from app.schemas.schemas import TransactionCreate, StockOut, TransactionOut, ChangePasswordOut, ChangePassword, profile_details
 
 import logging
 logger = logging.getLogger(__name__)
@@ -16,12 +16,13 @@ class PortfolioEndpoints:
         service = portfolio_db_service()
         result = service.list_stock()
         stocks: list[StockOut] = []
-        for sym, name, sector, industry in result:
+        for sym, name, sector, industry,price in result:
             res = StockOut(
                 symbol=sym,
                 name=name,
                 sector=sector,
-                industry=industry
+                industry=industry,
+                price=price,
             )
             stocks.append(res)
         return stocks
@@ -77,3 +78,12 @@ class PortfolioEndpoints:
         if result:
             return ChangePasswordOut(message="Password Change successfully.")
         return result
+
+    @staticmethod
+    def profile(user = Depends(AuthService.get_current_user)):
+        service = portfolio_db_service()
+        logger.info(user.id)
+        result = service.get_user_profile(user.user_id)
+        profile = profile_details(user_name=result[0], user_email=result[1], user_id=result[2])
+        return profile
+

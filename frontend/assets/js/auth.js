@@ -3,10 +3,10 @@ function initLogin() {
     document.querySelector("form").addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const user_name = document.getElementById("username").value;
+        const user_id = document.getElementById("userid").value;
         const password = document.getElementById("password").value;
 
-        const res = await api("/login", "POST", { user_name, password });
+        const res = await api("/login", "POST", { user_id, password });
 
         if (res.success) {
             localStorage.setItem("access_token", res.access_token);

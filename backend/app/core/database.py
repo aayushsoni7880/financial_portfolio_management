@@ -48,17 +48,17 @@ class SqlDatabase(Database):
 
     def get_user_by_id(self, user_id: int):
         query = """
-            select id, user_name, user_email, password from users where id=?
+            select id, user_name, user_email, password, user_id from users where user_id=?
         """
         user_details = self.fetch_one(query, (user_id,))
         if user_details:
-           return Users(id=user_details[0], user_name=user_details[1], email_address=user_details[2], password=user_details[3])
+           return Users(id=user_details[0], user_name=user_details[1], email_address=user_details[2], password=user_details[3], user_id=user_details[4])
         else:
             return Users()
 
     def get_user_by_name(self, user_name: str):
         query = """
-            select id, user_name, user_email, password from users where user_name=?
+            select id, user_name, user_email, password,user_id from users where user_name=?
         """
         user_details = self.fetch_one(query, (user_name,))
         logger.info(user_details)
@@ -78,13 +78,13 @@ class SqlDatabase(Database):
         else:
             return None
 
-    def insert_user(self, user_name: str, password, email_address):
+    def insert_user(self, user_name: str,user_id, password, email_address):
         print("Inside Insert User")
         query = """
-            INSERT INTO users (user_name, user_email, password)
-            VALUES (?, ?, ?)
+            INSERT INTO users (user_name, user_email, password,user_id)
+            VALUES (?, ?, ?,?)
         """
-        user_id = self.execute(query, (user_name, email_address, password))
+        self.execute(query, (user_name, email_address, password, user_id))
         return user_id
 
     def reset_password(self, email_address: str, password: str):

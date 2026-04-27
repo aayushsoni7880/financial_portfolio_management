@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.logging import setup_logger
 import logging
 
+from app.workers.price_worker import price_worker
 
 app = FastAPI(title=settings.app_name)
 app.include_router(router, prefix=settings.api_prefix)
@@ -35,8 +36,7 @@ def run_api_server():
     uvicorn.run("main:app", host="localhost", port=8080)
 
 def run_worker():
-    pass
-    # price_worker()  # infinite loop is fine
+    price_worker()  # infinite loop is fine
 
 if __name__ == "__main__":
     t = threading.Thread(target=run_worker, daemon=True)

@@ -1,4 +1,6 @@
 import uuid
+import random
+import string
 from os import access
 
 from fastapi import Depends, FastAPI, HTTPException, status
@@ -40,7 +42,7 @@ class AuthService():
             username = payload.get("sub")
             userid = payload.get('id')
             jti = payload.get("jti")
-            if username is None:
+            if userid is None:
                 raise credentials_exception
             _ , is_revoked = db.get_token_from_db(jti)
             if is_revoked:
@@ -62,6 +64,12 @@ class AuthService():
 
     def _verify_password(self, plain, hashed):
         return self.pwd_context.verify(plain + settings.PEPPER, hashed)
+
+    def generate_id(self):
+        first = random.choice(string.ascii_uppercase)  # 1 letter
+        middle = ''.join(random.choices(string.digits, k=3))  # 3 digits
+        last = ''.join(random.choices(string.ascii_uppercase, k=2))  # 2 letters
+        return first + middle + last
 
     def _create_access_token(self, data: dict):
         to_encode = data.copy()
@@ -103,20 +111,20 @@ class AuthService():
         except Exception as err:
             raise HTTPException(status_code=401, detail="Token Revoked")
 
-    def login(self, user_name: str, password: str):
+    def login(self, user_id: str, password: str):
         try:
-            user_details = self.db.get_user_by_name(user_name)
-            if user_details and user_details.id:
+            user_details = self.db.get_user_by_id(user_id)
+            if user_details and user_details.user_id:
                 if self._verify_password(password, user_details.password):
                     jti = str(uuid.uuid4())  # Json Token Identifier (JTI)
                     access_token = self._create_access_token(
                         data = {"sub": user_details.user_name,
-                                "id": user_details.id,
+                                "id": user_details.user_id,
                                 "jti": jti
                                 }
                     )
-                    refresh_token = self._create_refresh_token(data = {"sub": user_details.user_name, "id": user_details.id, "jti": jti})
-                    return AuthServiceResponseModel(success=True, message="Login Successfully.", id=user_details.id, access_token=access_token, refresh_token=refresh_token)
+                    refresh_token = self._create_refresh_token(data = {"sub": user_details.user_name, "id": user_details.user_id, "jti": jti})
+                    return AuthServiceResponseModel(success=True, message="Login Successfully.", id=user_details.user_id, access_token=access_token, refresh_token=refresh_token)
                 return AuthServiceResponseModel(success=False, message="Invalid Password")
             else:
                 return AuthServiceResponseModel(success=False, message="User does not exist")
@@ -125,14 +133,33 @@ class AuthService():
 
     def sign_up(self, user_name:str, password: str, email_address: str):
         try:
-            user_details = self.db.get_user_by_name(user_name)
+            user_details = self.db.get_user_by_email(email_address)
             logger.info(user_details)
             if user_details:
                 return AuthServiceResponseModel(success=False, message="User already exist")
 
             hashed_password = self._hash_password(password)
-            user_id = self.db.insert_user(user_name, hashed_password, email_address)
-            return AuthServiceResponseModel(success=True, message="Signup successfull.", id=user_id)
+            user_id = self.generate_id()
+
+            user_id = self.db.insert_user(user_name,user_id, hashed_password, email_address)
+            mail = GmailMailSent(AdminDetails.USER_NAME.value, AdminDetails.EMAIL_ADDRESS.value)
+            mail_data = MailHandlerRequest(
+                message=f"""
+                Thank you for joining us!
+
+                Here are your login credentials:
+
+                User ID: {user_id}
+                Password: {password}
+
+                Please keep this information secure and consider changing your password after your first login.
+
+                Best regards,  
+                Monolith Team
+                """,
+                receiver_email_address=email_address)
+            mail.sent_mail(mail_data)
+            return AuthServiceResponseModel(success=True, message="Signup successfully.", id=user_id)
         except Exception as err:
             print(f"Err: {err}")
             return AuthServiceResponseModel(success=False, message=f"{str(err)}")
@@ -169,3 +196,6 @@ class AuthService():
 
         except Exception as err:
             return AuthServiceResponseModel(success=False, message=f"{str(err)}")
+
+
+

@@ -46,3 +46,21 @@ function togglePassword(btn) {
   const input = btn.previousElementSibling;
   input.type = input.type === "password" ? "text" : "password";
 }
+
+async function loadProfile() {
+  try {
+    const data = await api("/profiles", "GET");
+
+    document.getElementById("userName").innerText = data.user_name;
+    document.getElementById("userEmail").innerText = data.user_email;
+    document.getElementById("userId").innerText = data.user_id;
+
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to load profile");
+  }
+}
+
+loadProfile();
+
+

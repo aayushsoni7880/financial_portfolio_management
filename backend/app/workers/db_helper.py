@@ -21,10 +21,11 @@ def db_writer():
             write_queue.task_done()
 
 def update_price_details(sym, price):
-    query = "update price_history set price=? where symbol=?"
+
+    query = "update stocks set price=? where symbol=?"
     write_queue.put((
         query,
-        (sym, price)
+        (price, sym)
     ))
 
 threading.Thread(target=db_writer, daemon=True).start()

@@ -10,7 +10,7 @@ class AuthServiceEndpoint:
     @staticmethod
     def login(request: LoginDetails):
         auth_service = AuthService()
-        response = auth_service.login(user_name=request.user_name, password=request.password)
+        response = auth_service.login(user_id=request.user_id, password=request.password)
         return response
 
     @staticmethod

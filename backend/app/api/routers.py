@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from app.services.endpoints import PortfolioEndpoints
 from app.schemas.schemas import StockOut, TransactionOut, TransactionCreate, \
-    PortfolioSummaryOut, PortfolioHoldingOut, PositionOut, PriceOut, ChangePasswordOut
+    PortfolioSummaryOut, PortfolioHoldingOut, PositionOut, PriceOut, ChangePasswordOut, profile_details
 
 router = APIRouter()
 
@@ -53,4 +53,10 @@ router.add_api_route(
     PortfolioEndpoints.change_password,
     methods=["POST"],
     response_model=ChangePasswordOut
+)
+router.add_api_route(
+    "/profiles",
+    PortfolioEndpoints.profile,
+    methods=["GET"],
+    response_model=profile_details
 )
