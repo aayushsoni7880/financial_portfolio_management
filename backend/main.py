@@ -20,7 +20,7 @@ app.include_router(auth_router, prefix=settings.api_prefix)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*", "https://your-frontend.vercel.app"],   # or ["http://localhost:3000"]
+    allow_origins=["*", "https://your-frontend.vercel.app", "https://grand-cascaron-9b4e1f.netlify.app"],   # or ["http://localhost:3000"]
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
