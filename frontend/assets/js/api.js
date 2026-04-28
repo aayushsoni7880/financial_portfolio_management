@@ -90,3 +90,24 @@ async function refreshTokenFlow() {
 
     return refreshPromise;
 }
+
+document.addEventListener("click", function (e) {
+  if (e.target.closest("#menuBtn")) {
+    const sidebar = document.querySelector("aside");
+    const btn = document.getElementById("menuBtn");
+
+    if (!sidebar || !btn) return;
+
+    sidebar.classList.toggle("-translate-x-full");
+  }
+});
+
+
+
+function toggleSidebar() {
+  const sidebar = document.querySelector("aside");
+
+  if (!sidebar) return;
+
+  sidebar.classList.toggle("-translate-x-full");
+}

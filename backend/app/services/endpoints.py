@@ -36,7 +36,7 @@ class PortfolioEndpoints:
     @staticmethod
     def get_user_transactions_details(user = Depends(AuthService.get_current_user)):
         service = portfolio_db_service()
-        result = service.get_user_trx(user.id)
+        result = service.get_user_trx(user.user_id)
 
         transactions: list[TransactionOut] = []
         for id, user_id, symbol, quantity, price, type, created_at in result:
@@ -55,13 +55,13 @@ class PortfolioEndpoints:
     @staticmethod
     def get_user_positions(user = Depends(AuthService.get_current_user)):
         service = portfolio_db_service()
-        positions = service.get_user_positions(user.id)
+        positions = service.get_user_positions(user.user_id)
         return positions
 
     @staticmethod
     def get_portfolio_summary(user = Depends(AuthService.get_current_user)):
         service = portfolio_db_service()
-        holding = service.get_portfolio_summary(user.id)
+        holding = service.get_portfolio_summary(user.user_id)
         return holding
 
     @staticmethod
@@ -74,7 +74,7 @@ class PortfolioEndpoints:
     @staticmethod
     def change_password(request: ChangePassword, user = Depends(AuthService.get_current_user)):
         service = portfolio_db_service()
-        result = service.change_password(user.id,  request.current_password, request.new_password)
+        result = service.change_password(user.user_id,  request.current_password, request.new_password)
         if result:
             return ChangePasswordOut(message="Password Change successfully.")
         return result

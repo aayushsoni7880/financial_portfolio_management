@@ -88,7 +88,7 @@ class TransactionOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    user_id: int
+    user_id: str
     symbol: str
     quantity: float
     price: float
@@ -130,7 +130,7 @@ class PortfolioPeriodMetricsOut(BaseModel):
 
 
 class PortfolioSummaryOut(BaseModel):
-    user_id: int
+    user_id: str
     realized_pnl_total: float
     unrealized_pnl_total: float
     holdings: list[PortfolioHoldingOut]

@@ -25,9 +25,28 @@ def drop_refresh_token_table():
 
 def truncate_table():
     query  = """
-        truncate table users
+        DELETE FROM users
     """
     db.execute(query)
+    query = """
+    DELETE FROM positions
+    """
+    db.execute(query)
+
+    query = """
+    DELETE FROM transactions
+    """
+    db.execute(query)
+
+    query = """
+    DELETE FROM refresh_token
+    """
+
+    db.execute(query)
+
+    query = """
+        DELETE FROM users
+    """
 
 def create_users_table():
     query = """
@@ -92,4 +111,7 @@ create_users_table()
 # alter_stocks_table()
 
 # drop_price_history_table()
+
+
+truncate_table()
 
